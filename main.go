@@ -31,14 +31,18 @@ func main() {
 		chatID := update.Message.Chat.ID
 		MessageID := update.Message.MessageID
 		UserText := update.Message.Text
-		if UserText != "" {
+
+		if UserText == "/start" {
+            message := "لینک یا فایل مورد نظر خود را ارسال کنید."
+			utils.TextMessageSender(bot, message, chatID, MessageID)
+		} else if UserText != "" {
 			message, method, filename := utils.DownloadFileFromURL(UserText)
 			utils.TextMessageSender(bot, message, chatID, MessageID)
 			switch method {
 			case "upload":
 				utils.SendFileByUploading(bot, filename, chatID, MessageID, UserText)
-            case "forward":
-                utils.SendFileByFileID(bot, filename,chatID,MessageID)
+			case "forward":
+				utils.SendFileByFileID(bot, filename, chatID, MessageID)
 			}
 		} else {
 			utils.TextMessageSender(bot, textstate, chatID, MessageID)
