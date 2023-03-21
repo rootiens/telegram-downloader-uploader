@@ -22,9 +22,9 @@ func SendFileByUploading(bot *tgbotapi.BotAPI, FileName string, ChatID int64, Me
 
 	if err != nil {
 		log.Println("\033[31m", err, "\033[0m")
-        return
+		return
 	}
-    
+
 	res, _ := GetDB().Prepare("insert into files (id, link, fileid, expire_at) values (?,?,?,?)")
 	res.Exec(nil, RequestedURL, tlgresp.Document.FileID, nil)
 	defer res.Close()
