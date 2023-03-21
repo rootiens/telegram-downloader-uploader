@@ -26,7 +26,7 @@ func SendFileByUploading(bot *tgbotapi.BotAPI, FileName string, ChatID int64, Me
 	}
     
 	res, _ := GetDB().Prepare("insert into files (id, link, fileid, expire_at) values (?,?,?,?)")
-	res.Exec(nil, RequestedURL, tlgresp.Document.FileID, nil, tlgresp.Document.FileID)
+	res.Exec(nil, RequestedURL, tlgresp.Document.FileID, nil)
 	defer res.Close()
 
 	go DeleteFileFromDisk(FileName)
