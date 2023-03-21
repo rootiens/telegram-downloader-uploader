@@ -20,13 +20,24 @@ func SendFileByUploading(bot *tgbotapi.BotAPI, FileName string, ChatID int64, Me
 	msg.ReplyToMessageID = MessageID
 	tlgresp, err := bot.Send(msg)
 
+	var FileID string
+
+	if tlgresp.Video != nil {
+		FileID = tlgresp.Video.FileID
+	} else if tlgresp.Photo != nil {
+		p := tlgresp.Photo
+		FileID = p[len(p)-1].FileID
+	} else {
+		FileID = tlgresp.Document.FileID
+	}
+
 	if err != nil {
 		log.Println("\033[31m", err, "\033[0m")
 		return
 	}
 
 	res, _ := GetDB().Prepare("insert into files (id, link, fileid, expire_at) values (?,?,?,?)")
-	res.Exec(nil, RequestedURL, tlgresp.Document.FileID, nil)
+	res.Exec(nil, RequestedURL, FileID, nil)
 	defer res.Close()
 
 	go DeleteFileFromDisk(FileName)
