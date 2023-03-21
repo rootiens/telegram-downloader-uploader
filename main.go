@@ -1,16 +1,20 @@
 package main
 
 import (
+	"fmt"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/rootiens/telegram-downloader-uploader/utils"
 )
 
 func main() {
 	utils.CreateDownloadDir()
+
 	utils.ConnectDB()
-	BOT_TOKEN := ""
-	bot, err := tgbotapi.NewBotAPI(BOT_TOKEN)
+
+	bot, err := tgbotapi.NewBotAPI(utils.LoadEnv().Token)
 	utils.CheckErr(err)
+
 	bot.Debug = true
 
 	updateConfig := tgbotapi.NewUpdate(0)
@@ -33,7 +37,7 @@ func main() {
 		UserText := update.Message.Text
 
 		if UserText == "/start" {
-            message := "لینک یا فایل مورد نظر خود را ارسال کنید."
+			message := "لینک یا فایل مورد نظر خود را ارسال کنید."
 			utils.TextMessageSender(bot, message, chatID, MessageID)
 		} else if UserText != "" {
 			message, method, filename := utils.DownloadFileFromURL(UserText)
